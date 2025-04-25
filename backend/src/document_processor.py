@@ -163,7 +163,7 @@ def query_bns(user_query, top_k=10):
         list: List of most relevant document chunks with their content and metadata
     """
     # Initialize the Chroma database with the same embeddings
-    db = Chroma(persist_directory="./bns_db", embedding_function=embeddings)
+    db = Chroma(persist_directory="../bns_db", embedding_function=embeddings)
     
     # Clean the query for better matching
     clean_query = clean_text(user_query)
@@ -564,7 +564,7 @@ def query_constitution(user_query, top_k=10):
         list: List of most relevant constitution document chunks with their content and metadata
     """
     # Initialize the Chroma database with the same embeddings
-    constitution_db = Chroma(persist_directory="./constitution_db", embedding_function=embeddings)
+    constitution_db = Chroma(persist_directory="../constitution_db", embedding_function=embeddings)
     
     # Clean and process the query
     clean_query = clean_text(user_query)

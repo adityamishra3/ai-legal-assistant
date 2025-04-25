@@ -9,8 +9,10 @@ dependencies = [
     "flask>=3.1.0",
     "flask-cors>=5.0.1",
     "langchain>=0.3.24",
+    "langchain-chroma",
     "langchain-community>=0.3.22",
     "langchain-groq>=0.3.2",
     "langchain-openai>=0.3.14",
+    "markdown>=3.8",
     "python-dotenv>=1.1.0",
 ]

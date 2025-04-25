@@ -20,8 +20,8 @@ def search_indian_kanoon(intent: dict, limit=20):
         date_range = f"sortby%3A{intent['meta_info'].get(date_range)}"'''
 
     search_query = query.replace(" ", "+")
-    url = f"https://indiankanoon.org/search/?formInput={search_query}+doctypes:supremecourt,highcourts"
-
+    url = f"https://indiankanoon.org/search/?formInput={search_query}+doctypes:{doctype}+{date_range}"
+    print("URL: ",url)
     response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     soup = BeautifulSoup(response.text, "html.parser")
     snip = []
@@ -41,7 +41,7 @@ def search_indian_kanoon(intent: dict, limit=20):
 
         hlbottom = result_block.find_next("div", class_="hlbottom")
         court = hlbottom.select_one(".docsource").get_text(strip=True) if hlbottom else None
-
+        
         results.append({
             "title": title.strip(),
             "url": full_url.strip(),
