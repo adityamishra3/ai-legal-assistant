@@ -29,13 +29,13 @@ def get_intent(user_query: str)-> object:
     2. Extract any **META INFORMATION** from the query, such as:
     - Query : {user_query}
     - Court (e.g., Supreme Court, High Court, state of maharastra, state of gujrat etc.)
-    - Date Range (e.g., "recent", "2021", etc.)
+    - Date Range (e.g., "mostrecent", "2021", "leastrecent" ,etc.)
     - Article/Section (e.g., IPC 376, Article 21)
     - Extra Keywords (e.g., bail, dowry, murder)
 
     Return the result in **valid JSON** format. Do not add any explanations or formatting.
 
-    If any metadata is **not mentioned**, set its value to `null`.
+    If any metadata is **not mentioned**, set its value to `None`.
 
     Now process this user query:
 
@@ -48,7 +48,7 @@ def get_intent(user_query: str)-> object:
         "meta_info": {{
             "query" : "Show me all recent Supreme Court cases on IPC 376 and sexual assault"
             "court": "Supreme Court",
-            "date_range": "recent",
+            "date_range": "mostrecent",
             "article_or_section": "IPC 376",
             "extra_keywords": ["sexual assault"]
         }}
