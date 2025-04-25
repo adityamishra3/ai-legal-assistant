@@ -501,7 +501,7 @@ def old_constitution():
     print(f"Adding new documents: {len(new_chunks)}")
     
     # Process in smaller batches with time delays to avoid rate limits
-    batch_size = 20  # Adjust based on your rate limits
+    batch_size = 30  # Adjust based on your rate limits
     total_batches = (len(new_chunks) + batch_size - 1) // batch_size  # Ceiling division
     
     for i in range(0, len(new_chunks), batch_size):
@@ -917,4 +917,4 @@ def query_constitution_with_llm(user_query, top_k=10):
     return response
 
 
-print(query_bns_with_llm(""))
+print(query_bns_with_llm("A group attacks a person due to religion. Which provisions of bns handle this?"))
