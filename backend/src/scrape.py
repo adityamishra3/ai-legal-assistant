@@ -14,13 +14,12 @@ def search_indian_kanoon(intent: dict, limit=10):
     doctype = intent["meta_info"].get("court")
     date_range = intent["meta_info"].get("date_range")
     if type(date_range) is int:
-        date_range = f"year%3A+{intent['meta_info'].get("date_range")}"
+        date_range = f"year%3A+{date_range}"
     else:
-        date_range = f"sortby%3A{intent['meta_info'].get(date_range)}"
-
+        date_range = f"sortby%3A{date_range}"
     search_query = query.replace(" ", "+")
-    url = f"https://indiankanoon.org/search/?formInput={search_query}+doctypes:supremecourt,highcourts"
-
+    url = f"https://indiankanoon.org/search/?formInput={search_query}+doctypes:{doctype}+{date_range}"
+    print("URL: ",url)
     response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -38,7 +37,7 @@ def search_indian_kanoon(intent: dict, limit=10):
 
         hlbottom = result_block.find_next("div", class_="hlbottom")
         court = hlbottom.select_one(".docsource").get_text(strip=True) if hlbottom else None
-
+        
         results.append({
             "title": title.strip(),
             "url": full_url.strip(),
@@ -55,29 +54,6 @@ def fetch_full_judgment(url):
     doc_div = soup.find("div", class_="judgments")
     return doc_div.get_text(strip=True, separator="\n") if doc_div else ""
 
-
-def embed_and_store(docs, save_path="choma_db"):
-    embeddings = AzureOpenAIEmbeddings(
-        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
-        azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
-        openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-    )
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-
-    documents = []
-    for doc in docs:
-        text = doc["judgment_text"]
-        metadata = {k: v for k, v in doc.items() if k != "judgment_text"}
-        for chunk in splitter.split_text(text):
-            documents.append(Document(page_content=chunk, metadata=metadata))
-
-    vectorstore = Chroma(
-        collection_name="judgements",
-        embedding_function=embeddings,
-        persist_directory=save_path,
-    )
-    vectorstore.save_local(save_path)
-    print(f"✅ Stored {len(documents)} chunks in chromaDB at '{save_path}'")
 
 
 def main():
@@ -110,10 +86,9 @@ def main():
             "snippet": case["snippet"],
             "judgment_text": judgment_text
         })
-
+        # break
     # print("Embedding & storing in FAISS...")
     # embed_and_store(docs)
-    print(d for d in docs)
 
 
 if __name__ == "__main__":
