@@ -65,7 +65,34 @@ def fetch_full_judgment(url):
     return doc_div.get_text(strip=True, separator="\n") if doc_div else ""
 
 
-
+def summarize_large_judgment(judgment_text, query, chunk_size=3000):
+    # Split judgment into manageable chunks
+    chunks = [judgment_text[i:i+chunk_size] for i in range(0, len(judgment_text), chunk_size)]
+    
+    chunk_summaries = []
+    for i, chunk in enumerate(chunks):
+        system_prompt = """You are a legal assistant. Concisely extract key information from this judgment segment. Focus only on facts, legal principles, and reasoning visible in this segment."""
+        
+        user_prompt = f"""This is segment {i+1}/{len(chunks)} of a judgment related to: "{query}"
+        
+        Extract only the important legal information from this segment:
+        
+        {chunk}"""
+        
+        chunk_summary = get_llm_response(system_prompt, user_prompt)
+        chunk_summaries.append(chunk_summary)
+    
+    # Final pass to combine chunk summaries
+    system_prompt = """You are a legal assistant specializing in Indian law. Create a cohesive summary from these judgment segment summaries, focusing on key facts, legal issues, court reasoning, and relevance to the query."""
+    
+    user_prompt = f"""Based on the query "{query}", create a unified summary from these judgment segment summaries:
+    
+    {' '.join(chunk_summaries)}
+    
+    Provide a structured final summary that highlights the most relevant aspects related to the query. Return the output only in text format (no markdown or any other format) and it should only state the information, no need for generic comments."""
+    
+    final_summary = get_llm_response(system_prompt, user_prompt)
+    return final_summary
 
 def main():
     intent = {
@@ -101,9 +128,13 @@ def main():
             "judgment_text": judgment_text
         })'''
     
-    print("Judgement Result: ", judgment_text)
+    #print("Judgement Result: ")
     #TODO PASS JUDGEMENT TO LLM, OPTIMIZE QUERY BEING SENT TO INDIAN KANOON, LLM OUTPUT ONLY IN TEXT
 
-    
+    # Use the summarize_large_judgment function instead of direct LLM call
+    result = summarize_large_judgment(judgment_text, intent['meta_info']['query'])
+    print("Final Result: ", result)
+    return result
+
 if __name__ == "__main__":
     main()
