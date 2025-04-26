@@ -733,7 +733,8 @@ def query_bns_with_llm(user_query, top_k=20):
     {context}
 
     Please provide a comprehensive but concise answer, citing specific sections, 
-    and including direct quotes when appropriate."""
+    and including direct quotes when appropriate.
+    Only provide the output in text format and do not use generic comments in you responses."""
     
     # Get LLM response
     response = get_llm_response(system_prompt, user_prompt)
@@ -910,7 +911,8 @@ def query_constitution_with_llm(user_query, top_k=10):
     {context}
 
     Please provide a comprehensive and accurate explanation based on the constitutional provisions,
-    citing specific Articles, Parts or Schedules, and explaining their significance."""
+    citing specific Articles, Parts or Schedules, and explaining their significance.
+    Only provide the output in text format and do not use generic comments in you responses."""
     
     # Get LLM response
     response = get_llm_response(system_prompt, user_prompt)
